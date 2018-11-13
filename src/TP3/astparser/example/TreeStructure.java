@@ -9,12 +9,12 @@ public class TreeStructure
 {
 	public String className;
 	
-	public Map<String, Set<String>> declarationInvocations;
+	public Map<String, Set<TreeNode>> declarationInvocations;
 	
 	public TreeStructure(String className)
 	{
 		this.className = className;
 		
-		declarationInvocations = new TreeMap<String, Set<String>>();
+		declarationInvocations = new TreeMap<String, Set<TreeNode>>();
 	}
 }

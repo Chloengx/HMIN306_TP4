@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
 
+import TP3.astparser.example.TreeNode;
 import TP3.astparser.example.TreeStructure;
 
 public class MethodsList extends JFrame
@@ -38,7 +39,7 @@ public class MethodsList extends JFrame
 
 		int xCounter = 50;
 		
-		for(Map.Entry<String, Set<String>> declarationInvocation : treeStructure.declarationInvocations.entrySet())
+		for(Map.Entry<String, Set<TreeNode>> declarationInvocation : treeStructure.declarationInvocations.entrySet())
 		{
 			Object methodNode = graph.insertVertex(parent, null, declarationInvocation.getKey(), xCounter, 150, DEFAULT_WIDTH,
 				DEFAULT_LENGTH);
@@ -47,11 +48,9 @@ public class MethodsList extends JFrame
 			
 			graph.insertEdge(parent, null, null, rootNode, methodNode);
 			
-			for(String methodInvocation : declarationInvocation.getValue())
+			for(TreeNode treeNode : declarationInvocation.getValue())
 			{
-				System.out.println("toto");
-				
-				Object methodInvocationName = graph.insertVertex(parent, null, methodInvocation, xInvocationCounter, 300, DEFAULT_WIDTH_SMALL,
+				Object methodInvocationName = graph.insertVertex(parent, null, treeNode.methodName, xInvocationCounter, 300, DEFAULT_WIDTH_SMALL,
 					DEFAULT_LENGTH, "fillColor=#9dff96;");
 				
 				xInvocationCounter +=  DEFAULT_WIDTH_SMALL + 50;

@@ -27,6 +27,7 @@ import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
+import TP3.astparser.example.TreeNode;
 import TP3.astparser.example.TreeStructure;
 import TP3.astparser.util.MethodsList;
 import TP3.astparser.util.SetType;
@@ -34,7 +35,7 @@ import TP3.astparser.util.SetType;
 public class Main
 {
 	private final static int PERCENT = 20;
-	private final static String PATH = "/auto_home/achaillot/workspace/JapScanDownloader/src";
+	private final static String PATH = "/auto_home/ldaviaud/workspace/JapScanDownloader/src";
 	
 	private final static int X = 2;
 	
@@ -172,7 +173,7 @@ public class Main
 					classMethods.get(className.toString()).add(methodDeclaration.getName().toString());
 					
 					if(treeStructures.get(node.getName().toString()).declarationInvocations.get(methodDeclaration.getName().toString()) == null)
-						treeStructures.get(node.getName().toString()).declarationInvocations.put(methodDeclaration.getName().toString(), new TreeSet<String>());
+						treeStructures.get(node.getName().toString()).declarationInvocations.put(methodDeclaration.getName().toString(), new TreeSet<TreeNode>());
 					
 					methodsWithLargestCode.add(new SetType((methodDeclaration.getName() + " - " + methodDeclaration.getReturnType2()+ " - " + methodDeclaration.parameters())
 							, localLineCounter
@@ -214,11 +215,11 @@ public class Main
 					TypeDeclaration typeDeclaration = (TypeDeclaration) parent;
 					
 					if(treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations.get(methodDeclaration.getName().toString()) == null)
-						treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations.put(methodDeclaration.getName().toString(), new TreeSet<String>());
+						treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations.put(methodDeclaration.getName().toString(), new TreeSet<TreeNode>());
 					
 					//System.out.println("METHODINVOCATION : " + methodInvocation.getName().toString());
-
-					treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations.get(methodDeclaration.getName().toString()).add(methodInvocation.getName().toString());
+					
+					treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations.get(methodDeclaration.getName().toString()).add(new TreeNode("", methodInvocation.getName().toString()));
 					
 					methodMethods.get(methodDeclaration.getName().toString()).add(methodInvocation.getName().toString());
 				}
@@ -323,7 +324,7 @@ public class Main
 		
 		System.out.println("maximumMethodParameter : " + maximumMethodParameter);
 		
-		String className = "MyString";
+		String className = "Main";
 		
 		/*
 		for(Map.Entry<String, Collection<String>> entry : classMethods.entrySet())
@@ -337,7 +338,6 @@ public class Main
 			}
 		}
 		*/
-		
 		
 		for(Map.Entry<String, TreeStructure> entry : treeStructures.entrySet())
 		{
