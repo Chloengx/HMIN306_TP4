@@ -109,9 +109,9 @@ public class Main
 	public static void parse(String code) throws IOException
 	{
 		ASTParser astParser = ASTParser.newParser(AST.JLS3);
-
+		
+		astParser.setBindingsRecovery(true);
 		astParser.setSource(code.toCharArray());
-
 		astParser.setKind(ASTParser.K_COMPILATION_UNIT);
 
 		final CompilationUnit compilationUnit = (CompilationUnit) astParser.createAST(null);
@@ -223,9 +223,11 @@ public class Main
 					
 					treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations.get(methodDeclaration.getName().toString()).add(new TreeNode("", methodInvocation.getName().toString()));
 					
-					methodMethods.get(methodDeclaration.getName().toString()).add(methodInvocation.getName().toString());
+					//methodMethods.get(methodDeclaration.getName().toString()).add(methodInvocation.getName().toString());
 					
 				    ITypeBinding typeBinding = methodInvocation.getExpression().resolveTypeBinding();
+				    System.out.println("Expression : " + methodInvocation.getExpression());
+				    System.out.println("TypeBinding: " + typeBinding);
 				    System.out.println("Type: " + typeBinding.toString());
 				
 				}
