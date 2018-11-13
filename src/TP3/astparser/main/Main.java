@@ -18,7 +18,9 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
@@ -222,10 +224,14 @@ public class Main
 					treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations.get(methodDeclaration.getName().toString()).add(new TreeNode("", methodInvocation.getName().toString()));
 					
 					methodMethods.get(methodDeclaration.getName().toString()).add(methodInvocation.getName().toString());
+					
+				    ITypeBinding typeBinding = methodInvocation.getExpression().resolveTypeBinding();
+				    System.out.println("Type: " + typeBinding.toString());
+				
 				}
 				catch(NullPointerException nullPointerException)
 				{
-					
+					nullPointerException.printStackTrace();
 				}
 				
 				return true;
