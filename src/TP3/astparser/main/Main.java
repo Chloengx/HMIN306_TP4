@@ -37,7 +37,7 @@ import TP3.astparser.util.SetType;
 public class Main
 {
 	private final static int PERCENT = 20;
-	private final static String PATH = "/auto_home/ldaviaud/workspace/JapScanDownloader/src";
+	private final static String PATH = "D:\\workspace\\JapScanDownloader\\src";
 	
 	private final static int X = 2;
 	
@@ -110,6 +110,7 @@ public class Main
 	{
 		ASTParser astParser = ASTParser.newParser(AST.JLS3);
 		
+		astParser.setResolveBindings(true);
 		astParser.setBindingsRecovery(true);
 		astParser.setSource(code.toCharArray());
 		astParser.setKind(ASTParser.K_COMPILATION_UNIT);
