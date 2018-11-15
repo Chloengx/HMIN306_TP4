@@ -1,4 +1,4 @@
-package TP4;
+package tp4;
 
 public class Couplage {
 
