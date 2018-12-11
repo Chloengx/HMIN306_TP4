@@ -11,7 +11,7 @@ import hmin306.tp4.astparser.util.GraphAST;
 
 public class Main
 {
-	private final static String PROJECT_SOURCE_FOLDER = "D:\\workspace\\JapScanDownloader\\src";
+	private final static String PROJECT_SOURCE_FOLDER = "/auto_home/ldaviaud/workspace/JapScanDownloader/src";
 
 	private final static int PERCENT = 20;
 
@@ -51,6 +51,7 @@ public class Main
 
 		System.out.println("maximumMethodParameter : " + astParserExample.getMaximumMethodParameter());
 
+		/*
 		String className = "Main";
 
 		for(Map.Entry<String, TreeStructure> entry : astParserExample.getTreeStructures().entrySet())
@@ -61,5 +62,6 @@ public class Main
 				frame.setSize(800, 740);
 				frame.setVisible(true);
 			}
+			*/
 	}
 }

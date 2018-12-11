@@ -70,7 +70,7 @@ public class ASTParserExample
 	private int			attributeCounter	= 0;
 	private TreeSet<String>	packages			= new TreeSet<String>();
 	private int			methodLineCounter	= 0;
-
+	
 	public ASTParserExample(String sourcePath)
 	{
 		astParser = ASTParser.newParser(AST.JLS10);
@@ -80,13 +80,20 @@ public class ASTParserExample
 
 		Map<String, String> options = JavaCore.getOptions();
 		options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_6);
-		options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_6);
+		options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM,
+				JavaCore.VERSION_1_6);
 		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_6);
 
+
+		String[] sources = { "/auto_home/ldaviaud/workspace/HMIN306_TP4" };
+		String[] classPaths = { "/auto_home/ldaviaud/workspace/HMIN306_TP4" };
+
+		astParser.setEnvironment(classPaths, sources,
+				new String[] { "UTF-8" }, true);
+		astParser.setBindingsRecovery(true);
+		astParser.setResolveBindings(true);
 		astParser.setCompilerOptions(options);
 		astParser.setStatementsRecovery(true);
-		astParser.setKind(ASTParser.K_COMPILATION_UNIT);
-
 		sourceFiles = new ArrayList<String>();
 
 		this.sourcePath = sourcePath;
@@ -115,7 +122,7 @@ public class ASTParserExample
 
 	}
 
-	private char[] fileToString(String filePath) throws IOException
+	public static char[] fileToString(String filePath) throws IOException
 	{
 		StringBuilder fileCode = new StringBuilder(1000);
 		BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath));
@@ -143,18 +150,17 @@ public class ASTParserExample
 	private void parseFile(String sourceFile) throws IOException
 	{
 		astParser.setSource(fileToString(sourceFile));
-		// parse(fileToString(file.getAbsolutePath()));
 		CompilationUnit compilationUnit = (CompilationUnit) astParser.createAST(null);
+		
 		compilationUnit.accept(new ASTVisitor()
 		{
-			public boolean visit(PackageDeclaration node)
+			public void endVisit(PackageDeclaration node)
 			{
 				packages.add(node.getName().toString());
 				packageCounter++;
-				return true;
 			}
 
-			public boolean visit(TypeDeclaration node)
+			public void endVisit(TypeDeclaration node)
 			{
 				SimpleName className = node.getName();
 
@@ -224,26 +230,23 @@ public class ASTParserExample
 				classWithManyMethods.add(new SetType(className.toString(), node.getMethods().length));
 
 				methodCounter += node.getMethods().length;
-
-				return true;
 			}
-
-			public boolean visit(MethodInvocation methodInvocation)
+			
+			public void endVisit(MethodInvocation methodInvocation)
 			{
-
 				try
 				{
 					ASTNode parent = methodInvocation.getParent();
 
 					if(parent == null)
-						return true;
+						return;
 
 					while(parent.getNodeType() != 31)
 					{
 						parent = parent.getParent();
 
 						if(parent == null)
-							return true;
+							return;
 					}
 
 					MethodDeclaration methodDeclaration = (MethodDeclaration) parent;
@@ -251,24 +254,24 @@ public class ASTParserExample
 					parent = methodInvocation.getParent();
 
 					if(parent == null)
-						return true;
+						return;
 
 					while(parent.getNodeType() != 55)
 						parent = parent.getParent();
 
 					TypeDeclaration typeDeclaration = (TypeDeclaration) parent;
-
-					if(treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations
-						.get(methodDeclaration.getName().toString()) == null)
-						treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations
-							.put(methodDeclaration.getName().toString(), new TreeSet<TreeNode>());
+					
+//					if(treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations
+//						.get(methodDeclaration.getName().toString()) == null)
+//						treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations
+//							.put(methodDeclaration.getName().toString(), new TreeSet<TreeNode>());
 
 					// System.out.println("METHODINVOCATION : " +
 					// methodInvocation.getName().toString());
-
-					treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations
-						.get(methodDeclaration.getName().toString())
-						.add(new TreeNode("", methodInvocation.getName().toString()));
+//
+//					treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations
+//						.get(methodDeclaration.getName().toString())
+//						.add(new TreeNode("", methodInvocation.getName().toString()));
 
 					// methodMethods.get(methodDeclaration.getName().toString()).add(methodInvocation.getName().toString());
 
@@ -276,15 +279,13 @@ public class ASTParserExample
 
 					if(expression != null)
 					{
-						// System.out.println(expression);
-
 						ITypeBinding typeBinding = expression.resolveTypeBinding();
+						
+						System.out.println("expression : " + expression);
+						System.out.println("typeBinding : " + typeBinding);
+						
 						// expression.resolveTypeBinding();
 
-						if(typeBinding != null)
-						{
-							System.out.println(typeBinding.toString());
-						}
 						// System.out.println("Expression : " +
 						// methodInvocation.getExpression());
 						// System.out.println("TypeBinding: " +
@@ -298,11 +299,10 @@ public class ASTParserExample
 				{
 					nullPointerException.printStackTrace();
 				}
-
-				return true;
 			}
 
 		});
+		
 	}
 
 	private void percentOfClassWithManyMethods()
