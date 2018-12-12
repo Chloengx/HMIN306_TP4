@@ -229,43 +229,47 @@ public class CustomASTVisitor extends ASTVisitor
 
 		IMethodBinding methodBinding = methodInvocation.resolveMethodBinding();
 
+		System.out.println(typeBinding);
+		
 		if (methodBinding != null && (methodBinding.getModifiers() & Modifier.STATIC) > 0)
 		{
 			boolean exist = false;
 			int index;
 			String completeName = currentPackageName + "." + currentClassName;
 			
-			System.out.println(completeName);
-			
+
 			for(index = 0; index < classesReferences.size(); index++)
 				if(classesReferences.get(index).getClassFromName().equals(completeName) &&
 						classesReferences.get(index).getClassToName().equals(expression.toString()))
+				{
 					exist = true;
+					break;
+				}
 			
 			if(exist)
 				classesReferences.get(index).incrementReferences();
 			else
 				classesReferences.add(new Triplet(currentPackageName + "." + currentClassName, expression.toString()));
 		}
-			//System.out.println("STATIC : " + expression);
 
-		
 		else if (typeBinding != null)
 		{
-			System.out.println("expression : " + expression);
-
-			System.out.println("typeBinding : " + typeBinding.getQualifiedName());
-			
 			boolean exist = false;
 			int index;
 			String completeName = currentPackageName + "." + currentClassName;
 			
+			System.out.println("completeName : " + completeName);
+			
+			
 			for(index = 0; index < classesReferences.size(); index++)
+			{
 				if(classesReferences.get(index).getClassFromName().equals(completeName) &&
 						classesReferences.get(index).getClassToName().equals(typeBinding.getQualifiedName()))
+				{
 					exist = true;
-			
-			System.out.println(exist + " - " + index);
+					break;
+				}
+			}
 			
 			if(exist)
 				classesReferences.get(index).incrementReferences();

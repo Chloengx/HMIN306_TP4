@@ -37,6 +37,7 @@ public class Triplet
 		return referencesCounter;
 	}
 	
+	@Override
 	public boolean equals(Object object)
 	{
 		if(!(object instanceof Triplet))
@@ -46,6 +47,21 @@ public class Triplet
 		
 		return triplet.classFromName.equals(classFromName) &&
 				triplet.classToName.equals(classToName) &&
-				triplet.referencesCounter = referencesCounter;
+				triplet.referencesCounter == referencesCounter;
+	}
+	
+	@Override
+	public String toString()
+	{
+		StringBuilder toString = new StringBuilder();
+		
+		toString.append(classFromName);
+		toString.append(" -> ");
+		toString.append(classToName);
+		toString.append(" (");
+		toString.append(referencesCounter);
+		toString.append(")");
+		
+		return toString.toString();
 	}
 }

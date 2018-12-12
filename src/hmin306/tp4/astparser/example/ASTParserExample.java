@@ -14,8 +14,13 @@ import hmin306.tp4.astparser.util.ParsingHelper;
 public class ASTParserExample
 {
 	private final static String UNIT_NAME = "HMIN306_TP4";
-	private final static String ENVIRONMENT_CLASS_PATH = "/home/harkame/workspace/HMIN306_TP4";
-	private final static String ENVIRONMENT_SOURCES = "/home/harkame/workspace/HMIN306_TP4";
+	
+	private final static String WINDOB_ENVIRONMENT_CLASS_PATH = "D:\\workspace\\HMIN306_TP4";
+	private final static String WINDOB_ENVIRONMENT_SOURCES = "D:\\workspace\\HMIN306_TP4";
+	
+	private final static String LINUX_ENVIRONMENT_CLASS_PATH = "/home/harkame/workspace/HMIN306_TP4";
+	private final static String LINUX_ENVIRONMENT_SOURCES = "/home/harkame/workspace/HMIN306_TP4";
+	
 	private final static String ENCODING = "UTF-8";
 	
 	// Attributes
@@ -35,8 +40,8 @@ public class ASTParserExample
  
 		astParser.setUnitName(UNIT_NAME);
 
-		String[] environmentClassPath = { ENVIRONMENT_CLASS_PATH };
-		String[] environmentSources = { ENVIRONMENT_SOURCES };
+		String[] environmentClassPath = { WINDOB_ENVIRONMENT_CLASS_PATH };
+		String[] environmentSources = { WINDOB_ENVIRONMENT_SOURCES };
 	
 		astParser.setEnvironment(environmentClassPath, environmentSources, new String[] { ENCODING }, true);
 
@@ -78,20 +83,16 @@ public class ASTParserExample
 		astParser = ASTParser.newParser(AST.JLS10);
 		astParser.setResolveBindings(true);
 		astParser.setKind(ASTParser.K_COMPILATION_UNIT);
-
+ 
 		astParser.setBindingsRecovery(true);
+ 
+		astParser.setUnitName(UNIT_NAME);
 
-		String unitName = "HMIN306_TP4";
-		astParser.setUnitName(unitName);
+		String[] environmentClassPath = { WINDOB_ENVIRONMENT_CLASS_PATH };
+		String[] environmentSources = { WINDOB_ENVIRONMENT_SOURCES };
+	
+		astParser.setEnvironment(environmentClassPath, environmentSources, new String[] { ENCODING }, true);
 
-		String[] sources =
-		{ "/home/harkame/workspace/JapScanDownloader" };
-		String[] classPaths =
-		{ "/home/harkame/workspace/JapScanDownloader" };
-
-		astParser.setEnvironment(classPaths, sources, new String[]
-		{ "UTF-8" }, true);
-		
 		astParser.setSource(ParsingHelper.fileToString(sourceFile).toCharArray());
 
 		CompilationUnit compilationUnit = (CompilationUnit) astParser.createAST(null);

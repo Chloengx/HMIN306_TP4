@@ -7,7 +7,8 @@ import hmin306.tp4.astparser.example.CustomASTVisitor;
 
 public class Main
 {
-	private final static String PROJECT_SOURCE_FOLDER = "/home/harkame/workspace/JapScanDownloader/src";
+	private final static String WINDOB_PROJECT_SOURCE_FOLDER = "D:\\workspace\\JapScanDownloader\\src";
+	private final static String LINUX_PROJECT_SOURCE_FOLDER = "/home/harkame/workspace/JapScanDownloader/src";
 
 	private final static int PERCENT = 20;
 
@@ -15,7 +16,7 @@ public class Main
 
 	public static void main(String[] args) throws IOException
 	{
-		ASTParserExample astParserExample = new ASTParserExample(PROJECT_SOURCE_FOLDER);
+		ASTParserExample astParserExample = new ASTParserExample(WINDOB_PROJECT_SOURCE_FOLDER);
 
 		astParserExample.initialize();
 		
