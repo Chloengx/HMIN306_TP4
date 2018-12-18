@@ -1,4 +1,4 @@
-package hmin306.tp4.astparser.example;
+package hmin306.tp4.astparser.example.test;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -12,6 +12,7 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 
+import hmin306.tp4.astparser.example.visitor.CustomASTVisitor;
 import hmin306.tp4.astparser.util.ParsingHelper;
 
 public class ASTTester

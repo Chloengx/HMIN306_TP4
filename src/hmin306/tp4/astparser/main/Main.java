@@ -3,12 +3,19 @@ package hmin306.tp4.astparser.main;
 import java.io.IOException;
 
 import hmin306.tp4.astparser.example.ASTParserExample;
-import hmin306.tp4.astparser.example.CustomASTVisitor;
+import hmin306.tp4.astparser.example.visitor.ClassVisitor;
+import hmin306.tp4.astparser.example.visitor.CustomASTVisitor;
 
 public class Main
 {
+	private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 	private final static String WINDOB_PROJECT_SOURCE_FOLDER = "D:\\workspace\\JapScanDownloader\\src";
+	private final static String WINDOB_ENVIRONMENT_CLASS_PATH = "D:\\workspace\\HMIN306_TP4";
+	private final static String WINDOB_ENVIRONMENT_SOURCES = "D:\\workspace\\HMIN306_TP4";
+
 	private final static String LINUX_PROJECT_SOURCE_FOLDER = "/home/harkame/workspace/JapScanDownloader/src";
+	private final static String LINUX_ENVIRONMENT_CLASS_PATH = "/home/harkame/workspace/HMIN306_TP4";
+	private final static String LINUX_ENVIRONMENT_SOURCES = "/home/harkame/workspace/HMIN306_TP4";
 
 	private final static int PERCENT = 20;
 
@@ -16,13 +23,14 @@ public class Main
 
 	public static void main(String[] args) throws IOException
 	{
-		ASTParserExample astParserExample = new ASTParserExample(WINDOB_PROJECT_SOURCE_FOLDER);
+		ASTParserExample astParserExample = new ASTParserExample(LINUX_PROJECT_SOURCE_FOLDER,
+				LINUX_ENVIRONMENT_CLASS_PATH, LINUX_ENVIRONMENT_SOURCES);
 
 		astParserExample.initialize();
-		
-		System.out.println(System.getProperty("line.separator"));
+
+		System.out.println(LINE_SEPARATOR);
 		System.out.println("--- Result --- ");
-		System.out.println(System.getProperty("line.separator"));
+		System.out.println(LINE_SEPARATOR);
 
 		System.out.println("classCounter : " + CustomASTVisitor.getClassCounter());
 		System.out.println("lineCounter : " + CustomASTVisitor.getLineCounter());
@@ -34,34 +42,33 @@ public class Main
 		System.out.println("attributeAverage : " + CustomASTVisitor.getAttributeAverage());
 
 		System.out.println(PERCENT + "% of class with many Methods : "
-			+ CustomASTVisitor.getPercentClassWithManyMethods().toString());
+				+ CustomASTVisitor.getPercentClassWithManyMethods().toString());
 		System.out.println(PERCENT + "% of class with many Attributes : "
-			+ CustomASTVisitor.getPercentClassWithManyAttributes().toString());
+				+ CustomASTVisitor.getPercentClassWithManyAttributes().toString());
 
 		System.out.println("classWithManyMethodsAndAttributes : "
-			+ CustomASTVisitor.getClassWithManyMethodsAndAttributes().toString());
+				+ CustomASTVisitor.getClassWithManyMethodsAndAttributes().toString());
 
 		System.out.println("class With More Than " + X + " Methods : "
-			+ CustomASTVisitor.getClassWithMoreThanXMethods().toString());
+				+ CustomASTVisitor.getClassWithMoreThanXMethods().toString());
 		System.out.println(PERCENT + "% of Methods with largest code (by number of line) : "
-			+ CustomASTVisitor.getPercentMethodsWithLargestCode().toString());
+				+ CustomASTVisitor.getPercentMethodsWithLargestCode().toString());
 
 		System.out.println("maximumMethodParameter : " + CustomASTVisitor.getMaximumMethodParameter());
-		
+
 		System.out.println("classesReferences : " + CustomASTVisitor.getClassesReferences());
-		
+
+		System.out.println("projectClass : " + ClassVisitor.getProjectClass());
 
 		/*
-		String className = "Main";
-
-		for(Map.Entry<String, TreeStructure> entry : astParserExample.getTreeStructures().entrySet())
-			if(entry.getKey().equals(className))
-			{
-				GraphAST frame = new GraphAST(entry.getValue());
-				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				frame.setSize(800, 740);
-				frame.setVisible(true);
-			}
-			*/
+		 * String className = "Main";
+		 * 
+		 * for(Map.Entry<String, TreeStructure> entry :
+		 * astParserExample.getTreeStructures().entrySet())
+		 * if(entry.getKey().equals(className)) { GraphAST frame = new
+		 * GraphAST(entry.getValue());
+		 * frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); frame.setSize(800,
+		 * 740); frame.setVisible(true); }
+		 */
 	}
 }

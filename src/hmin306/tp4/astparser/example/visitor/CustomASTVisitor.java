@@ -1,4 +1,4 @@
-package hmin306.tp4.astparser.example;
+package hmin306.tp4.astparser.example.visitor;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -58,9 +59,9 @@ public class CustomASTVisitor extends ASTVisitor
 	private static int attributeCounter = 0;
 	private static TreeSet<String> packages = new TreeSet<String>();
 	private static int methodLineCounter = 0;
-	
+
 	private static List<Triplet> classesReferences = new ArrayList<Triplet>();
-	
+
 	private String currentPackageName;
 	private String currentClassName;
 
@@ -68,20 +69,18 @@ public class CustomASTVisitor extends ASTVisitor
 	{
 		packages.add(node.getName().toString());
 		packageCounter++;
-		
+
 		currentPackageName = node.getName().toString();
-		
+
 		return true;
 	}
 
 	public boolean visit(TypeDeclaration node)
 	{
 		SimpleName className = node.getName();
-		
+
 		currentClassName = className.toString();
 
-		System.out.println("className : " + className);
-		
 		if (treeStructures.get(node.getName().toString()) == null)
 			treeStructures.put(node.getName().toString(), new TreeStructure(node.getName().toString()));
 
@@ -146,7 +145,7 @@ public class CustomASTVisitor extends ASTVisitor
 		classWithManyMethods.add(new SetType(className.toString(), node.getMethods().length));
 
 		methodCounter += node.getMethods().length;
-		
+
 		return true;
 	}
 //
@@ -221,35 +220,76 @@ public class CustomASTVisitor extends ASTVisitor
 	public boolean visit(MethodInvocation methodInvocation)
 	{
 		Expression expression = methodInvocation.getExpression();
-		
-		if(expression == null)
+
+		if (expression == null)
 			return true;
 
 		ITypeBinding typeBinding = expression.resolveTypeBinding();
 
 		IMethodBinding methodBinding = methodInvocation.resolveMethodBinding();
 
-		System.out.println(typeBinding);
-		
 		if (methodBinding != null && (methodBinding.getModifiers() & Modifier.STATIC) > 0)
 		{
 			boolean exist = false;
 			int index;
 			String completeName = currentPackageName + "." + currentClassName;
-			
 
-			for(index = 0; index < classesReferences.size(); index++)
-				if(classesReferences.get(index).getClassFromName().equals(completeName) &&
-						classesReferences.get(index).getClassToName().equals(expression.toString()))
-				{
+			for (index = 0; index < classesReferences.size() || exist; index++)
+				if (classesReferences.get(index).getClassFromName().equals(completeName)
+						&& classesReferences.get(index).getClassToName().equals(expression.toString()))
 					exist = true;
-					break;
-				}
-			
-			if(exist)
+
+			if (exist)
 				classesReferences.get(index).incrementReferences();
 			else
-				classesReferences.add(new Triplet(currentPackageName + "." + currentClassName, expression.toString()));
+			{
+				if (ClassVisitor.getProjectClass().contains(currentPackageName + "." + currentClassName)
+						&& ClassVisitor.getProjectClass().contains(expression.toString()))
+					classesReferences
+							.add(new Triplet(currentPackageName + "." + currentClassName, expression.toString()));
+			}
+			
+			
+			
+			///////////////////////
+			
+			ASTNode parent = methodInvocation.getParent();
+
+			if (parent == null)
+				return true;
+
+			while (parent.getNodeType() != 31)
+			{
+				parent = parent.getParent();
+
+				if (parent == null)
+					return true;
+			}
+
+			MethodDeclaration methodDeclaration = (MethodDeclaration) parent;
+
+			parent = methodInvocation.getParent();
+
+			if (parent == null)
+				return true;
+
+			while (parent.getNodeType() != 55)
+				parent = parent.getParent();
+
+			TypeDeclaration typeDeclaration = (TypeDeclaration) parent;
+
+			if (treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations
+					.get(methodDeclaration.getName().toString()) == null)
+				treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations
+						.put(methodDeclaration.getName().toString(), new TreeSet<TreeNode>());
+
+			treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations
+					.get(methodDeclaration.getName().toString())
+					.add(new TreeNode("", methodInvocation.getName().toString()));
+
+			System.out.println(methodInvocation);
+			methodMethods.get(methodDeclaration.getName().toString()).add(methodInvocation.getName().toString());
+
 		}
 
 		else if (typeBinding != null)
@@ -257,33 +297,26 @@ public class CustomASTVisitor extends ASTVisitor
 			boolean exist = false;
 			int index;
 			String completeName = currentPackageName + "." + currentClassName;
-			
-			System.out.println("completeName : " + completeName);
-			
-			
-			for(index = 0; index < classesReferences.size(); index++)
+
+			for (index = 0; index < classesReferences.size() || exist; index++)
 			{
-				if(classesReferences.get(index).getClassFromName().equals(completeName) &&
-						classesReferences.get(index).getClassToName().equals(typeBinding.getQualifiedName()))
-				{
+				if (classesReferences.get(index).getClassFromName().equals(completeName)
+						&& classesReferences.get(index).getClassToName().equals(typeBinding.getQualifiedName()))
 					exist = true;
-					break;
-				}
 			}
-			
-			if(exist)
+
+			if (exist)
 				classesReferences.get(index).incrementReferences();
-			else
-				classesReferences.add(new Triplet(currentPackageName + "." + currentClassName, typeBinding.getQualifiedName()));
-			
+			else if (ClassVisitor.getProjectClass().contains(currentPackageName + "." + currentClassName)
+					&& ClassVisitor.getProjectClass().contains(typeBinding.getQualifiedName()))
+				classesReferences
+						.add(new Triplet(currentPackageName + "." + currentClassName, typeBinding.getQualifiedName()));
+
 //			if(classesReferences.containsKey(typeBinding.getQualifiedName()))
 //				classesReferences.put(typeBinding.getQualifiedName(), classesReferences.get(typeBinding.getQualifiedName()) + 1);
 //			else
 //				classesReferences.put(typeBinding.getQualifiedName(), 1);
-		} 
-		//External library (/lib)
-		//else
-			//System.out.println("NULL : " + expression);
+		}
 
 		return true;
 	}
@@ -447,7 +480,7 @@ public class CustomASTVisitor extends ASTVisitor
 	{
 		return methodLineCounter;
 	}
-	
+
 	public static List<Triplet> getClassesReferences()
 	{
 		return classesReferences;

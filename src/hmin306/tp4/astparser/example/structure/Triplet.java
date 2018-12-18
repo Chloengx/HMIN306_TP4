@@ -61,6 +61,7 @@ public class Triplet
 		toString.append(" (");
 		toString.append(referencesCounter);
 		toString.append(")");
+		toString.append(System.getProperty("line.separator"));
 		
 		return toString.toString();
 	}
