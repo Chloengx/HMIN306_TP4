@@ -64,7 +64,7 @@ public class CustomASTVisitor extends ASTVisitor
 
 	private String currentPackageName;
 	private String currentClassName;
-
+	
 	public boolean visit(PackageDeclaration node)
 	{
 		packages.add(node.getName().toString());
@@ -234,90 +234,86 @@ public class CustomASTVisitor extends ASTVisitor
 			int index;
 			String completeName = currentPackageName + "." + currentClassName;
 
-			for (index = 0; index < classesReferences.size() || exist; index++)
+			for (index = 0; index < classesReferences.size(); index++)
 				if (classesReferences.get(index).getClassFromName().equals(completeName)
 						&& classesReferences.get(index).getClassToName().equals(expression.toString()))
+				{
 					exist = true;
+					break;
+				}
 
 			if (exist)
 				classesReferences.get(index).incrementReferences();
 			else
 			{
-				if (ClassVisitor.getProjectClass().contains(currentPackageName + "." + currentClassName)
-						&& ClassVisitor.getProjectClass().contains(expression.toString()))
-					classesReferences
-							.add(new Triplet(currentPackageName + "." + currentClassName, expression.toString()));
+				if(ClassVisitor.getProjectClass().contains(currentPackageName + "." + currentClassName) && ClassVisitor.getProjectClass().contains(expression.toString()))
+					classesReferences.add(new Triplet(currentPackageName + "." + currentClassName, expression.toString()));
 			}
-			
-			
-			
-			///////////////////////
-			
-			ASTNode parent = methodInvocation.getParent();
-
-			if (parent == null)
-				return true;
-
-			while (parent.getNodeType() != 31)
-			{
-				parent = parent.getParent();
-
-				if (parent == null)
-					return true;
-			}
-
-			MethodDeclaration methodDeclaration = (MethodDeclaration) parent;
-
-			parent = methodInvocation.getParent();
-
-			if (parent == null)
-				return true;
-
-			while (parent.getNodeType() != 55)
-				parent = parent.getParent();
-
-			TypeDeclaration typeDeclaration = (TypeDeclaration) parent;
-
-			if (treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations
-					.get(methodDeclaration.getName().toString()) == null)
-				treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations
-						.put(methodDeclaration.getName().toString(), new TreeSet<TreeNode>());
-
-			treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations
-					.get(methodDeclaration.getName().toString())
-					.add(new TreeNode("", methodInvocation.getName().toString()));
-
-			System.out.println(methodInvocation);
-			methodMethods.get(methodDeclaration.getName().toString()).add(methodInvocation.getName().toString());
-
 		}
-
 		else if (typeBinding != null)
 		{
 			boolean exist = false;
 			int index;
 			String completeName = currentPackageName + "." + currentClassName;
 
-			for (index = 0; index < classesReferences.size() || exist; index++)
+			for (index = 0; index < classesReferences.size(); index++)
 			{
 				if (classesReferences.get(index).getClassFromName().equals(completeName)
 						&& classesReferences.get(index).getClassToName().equals(typeBinding.getQualifiedName()))
+				{
 					exist = true;
+					break;
+				}
 			}
 
 			if (exist)
 				classesReferences.get(index).incrementReferences();
-			else if (ClassVisitor.getProjectClass().contains(currentPackageName + "." + currentClassName)
-					&& ClassVisitor.getProjectClass().contains(typeBinding.getQualifiedName()))
-				classesReferences
-						.add(new Triplet(currentPackageName + "." + currentClassName, typeBinding.getQualifiedName()));
+			else
+				if(ClassVisitor.getProjectClass().contains(currentPackageName + "." + currentClassName) && ClassVisitor.getProjectClass().contains(typeBinding.getQualifiedName()))
+					classesReferences.add(new Triplet(currentPackageName + "." + currentClassName, typeBinding.getQualifiedName()));
+		}
+		
+		/////////////////////////////
 
-//			if(classesReferences.containsKey(typeBinding.getQualifiedName()))
-//				classesReferences.put(typeBinding.getQualifiedName(), classesReferences.get(typeBinding.getQualifiedName()) + 1);
-//			else
-//				classesReferences.put(typeBinding.getQualifiedName(), 1);
+		ASTNode parent = methodInvocation.getParent();
+
+		if (parent == null)
+			return true;
+
+		while (parent.getNodeType() != 31)
+		{
+			parent = parent.getParent();
+
+			if (parent == null)
+				return true;
 		}
 
+		MethodDeclaration methodDeclaration = (MethodDeclaration) parent;
+
+		parent = methodInvocation.getParent();
+
+		if (parent == null)
+			return true;
+
+		while (parent.getNodeType() != 55)
+			parent = parent.getParent();
+
+		TypeDeclaration typeDeclaration = (TypeDeclaration) parent;
+
+		if(treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations
+			.get(methodDeclaration.getName().toString()) == null)
+			treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations
+				.put(methodDeclaration.getName().toString(), new TreeSet<TreeNode>());
+
+		 System.out.println("METHODINVOCATION : " +
+		 methodInvocation.getName().toString());
+
+		treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations
+			.get(methodDeclaration.getName().toString())
+			.add(new TreeNode("", methodInvocation.getName().toString()));
+
+		 methodMethods.get(methodDeclaration.getName().toString()).add(methodInvocation.getName().toString());
+		
 		return true;
 	}
 
