@@ -2,6 +2,7 @@ package hmin306.tp4.astparser.util;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.swing.JFrame;
 
@@ -26,7 +27,7 @@ public class GraphAST extends JFrame
 	private mxGraph	graph;
 	private Object		parent;
 
-	public GraphAST(TreeStructure treeStructure)
+	public GraphAST(Map<String, TreeStructure> treeStructure)
 	{
 		super("AST");
 
@@ -35,31 +36,34 @@ public class GraphAST extends JFrame
 
 		graph.getModel().beginUpdate();
 
-		Object rootNode = graph.insertVertex(parent, null, treeStructure.className, ROOT_X, ROOT_Y, DEFAULT_WIDTH,
-			DEFAULT_LENGTH, "fillColor=#ff8080;");
-
-		int xCounter = 50;
-
-		for(Map.Entry<String, Set<TreeNode>> declarationInvocation : treeStructure.declarationInvocations.entrySet())
+		for(Map.Entry<String, TreeStructure> entry : treeStructure.entrySet())
 		{
-			Object methodNode = graph.insertVertex(parent, null, declarationInvocation.getKey(), xCounter, 150,
-				DEFAULT_WIDTH, DEFAULT_LENGTH);
-
-			int xInvocationCounter = xCounter;
-
-			graph.insertEdge(parent, null, null, rootNode, methodNode);
-
-			for(TreeNode treeNode : declarationInvocation.getValue())
+			Object rootNode = graph.insertVertex(parent, null, entry.getKey(), ROOT_X, ROOT_Y, DEFAULT_WIDTH,
+				DEFAULT_LENGTH, "fillColor=#ff8080;");
+	
+			int xCounter = 50;
+	
+			for(Map.Entry<String, Set<TreeNode>> declarationInvocation : entry.getValue().declarationInvocations.entrySet())
 			{
-				Object methodInvocationName = graph.insertVertex(parent, null, treeNode.methodName,
-					xInvocationCounter, 300, DEFAULT_WIDTH_SMALL, DEFAULT_LENGTH, "fillColor=#9dff96;");
-
-				xInvocationCounter += DEFAULT_WIDTH_SMALL + 50;
-
-				graph.insertEdge(parent, null, null, methodNode, methodInvocationName);
+				Object methodNode = graph.insertVertex(parent, null, declarationInvocation.getKey(), xCounter, 150,
+					DEFAULT_WIDTH, DEFAULT_LENGTH);
+	
+				int xInvocationCounter = xCounter;
+	
+				graph.insertEdge(parent, null, null, rootNode, methodNode);
+	
+				for(TreeNode treeNode : declarationInvocation.getValue())
+				{
+					Object methodInvocationName = graph.insertVertex(parent, null, treeNode.className + " - " + treeNode.methodName,
+						xInvocationCounter, 300, DEFAULT_WIDTH_SMALL, DEFAULT_LENGTH, "fillColor=#9dff96;");
+	
+					xInvocationCounter += DEFAULT_WIDTH_SMALL + 50;
+	
+					graph.insertEdge(parent, null, null, methodNode, methodInvocationName);
+				}
+	
+				xCounter += DEFAULT_WIDTH + DEFAULT_SPACE;
 			}
-
-			xCounter += DEFAULT_WIDTH + DEFAULT_SPACE;
 		}
 
 		graph.getModel().endUpdate();
