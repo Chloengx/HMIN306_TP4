@@ -19,10 +19,9 @@ import org.eclipse.jdt.core.dom.PackageDeclaration;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
-import hmin306.tp4.astparser.example.structure.SetType;
-import hmin306.tp4.astparser.example.structure.TreeNode;
-import hmin306.tp4.astparser.example.structure.TreeStructure;
-import hmin306.tp4.astparser.example.structure.Triplet;
+import hmin306.tp4.structure.SetType;
+import hmin306.tp4.structure.Triplet;
+import hmin306.tp4.structure.tree.ClassTree;
 
 public class CustomASTVisitor extends ASTVisitor
 {
@@ -50,7 +49,7 @@ public class CustomASTVisitor extends ASTVisitor
 	private static Map<String, Collection<String>> classMethods = new TreeMap<String, Collection<String>>();
 	private static Map<String, Collection<String>> methodMethods = new TreeMap<String, Collection<String>>();
 
-	public static Map<String, TreeStructure> treeStructures = new TreeMap<String, TreeStructure>();
+	public static ClassTree classTree = new ClassTree();
 
 	private static TreeSet<SetType> classWithManyMethods = new TreeSet<SetType>();
 	private static TreeSet<SetType> classWithManyAttributes = new TreeSet<SetType>();
@@ -80,9 +79,6 @@ public class CustomASTVisitor extends ASTVisitor
 		SimpleName className = node.getName();
 
 		currentClassName = className.toString();
-
-		if (treeStructures.get(node.getName().toString()) == null)
-			treeStructures.put(node.getName().toString(), new TreeStructure(node.getName().toString()));
 
 		classMethods.put(className.toString(), new ArrayList<String>());
 
@@ -127,11 +123,6 @@ public class CustomASTVisitor extends ASTVisitor
 			methodLineCounter += localLineCounter;
 
 			classMethods.get(className.toString()).add(methodDeclaration.getName().toString());
-
-			if (treeStructures.get(node.getName().toString()).declarationInvocations
-					.get(methodDeclaration.getName().toString()) == null)
-				treeStructures.get(node.getName().toString()).declarationInvocations
-						.put(methodDeclaration.getName().toString(), new TreeSet<TreeNode>());
 
 			methodsWithLargestCode.add(new SetType(
 					(methodDeclaration.getName() + " - " + methodDeclaration.getReturnType2() + " - "
@@ -178,15 +169,15 @@ public class CustomASTVisitor extends ASTVisitor
 //
 //			TypeDeclaration typeDeclaration = (TypeDeclaration) parent;
 //
-////			if(treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations
+////			if(classTree.get(typeDeclaration.getName().toString()).declarationInvocations
 ////				.get(methodDeclaration.getName().toString()) == null)
-////				treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations
+////				classTree.get(typeDeclaration.getName().toString()).declarationInvocations
 ////					.put(methodDeclaration.getName().toString(), new TreeSet<TreeNode>());
 //
 //			// System.out.println("METHODINVOCATION : " +
 //			// methodInvocation.getName().toString());
 ////
-////			treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations
+////			classTree.get(typeDeclaration.getName().toString()).declarationInvocations
 ////				.get(methodDeclaration.getName().toString())
 ////				.add(new TreeNode("", methodInvocation.getName().toString()));
 //
@@ -301,15 +292,8 @@ public class CustomASTVisitor extends ASTVisitor
 	
 			TypeDeclaration typeDeclaration = (TypeDeclaration) parent;
 	
-			if(treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations
-				.get(methodDeclaration.getName().toString()) == null)
-				treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations
-					.put(methodDeclaration.getName().toString(), new TreeSet<TreeNode>());
-	
-			treeStructures.get(typeDeclaration.getName().toString()).declarationInvocations
-				.get(methodDeclaration.getName().toString())
-				.add(new TreeNode(typeBinding.getName(), methodInvocation.getName().toString()));
-	
+			classTree.addMethodInvocation(typeDeclaration.getName().toString(), methodDeclaration.getName().toString(), typeBinding.getName(), methodInvocation.getName().toString());
+			
 			//methodMethods.get(methodDeclaration.getName().toString()).add(methodInvocation.getName().toString());
 		}		
 		
@@ -444,9 +428,9 @@ public class CustomASTVisitor extends ASTVisitor
 		return methodMethods;
 	}
 
-	public static Map<String, TreeStructure> getTreeStructures()
+	public static ClassTree getclassTree()
 	{
-		return treeStructures;
+		return classTree;
 	}
 
 	public static TreeSet<SetType> getClassWithManyMethods()

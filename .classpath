@@ -59,5 +59,6 @@
 	<classpathentry kind="lib" path="D:/workspace/HMIN306_TP4/lib/jls4/org.eclipse.jdt.core-3.15.0.jar"/>
 	<classpathentry kind="lib" path="D:/workspace/HMIN306_TP4/lib/jls4/org.eclipse.osgi-3.13.100.jar"/>
 	<classpathentry kind="lib" path="D:/workspace/HMIN306_TP4/lib/jls4/org.eclipse.text-3.7.0.jar"/>
+	<classpathentry kind="lib" path="D:/workspace/HMIN306_TP4/lib/spoon-core-6.2.0-jar-with-dependencies.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

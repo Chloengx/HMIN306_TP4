@@ -1,19 +1,19 @@
 package hmin306.tp4.astparser.main;
 
 import java.io.IOException;
-import java.util.Map;
-
-import javax.swing.JFrame;
+import java.util.Collection;
+import java.util.Map.Entry;
 
 import hmin306.tp4.astparser.example.ASTParserExample;
-import hmin306.tp4.astparser.example.structure.TreeStructure;
 import hmin306.tp4.astparser.example.visitor.ClassVisitor;
 import hmin306.tp4.astparser.example.visitor.CustomASTVisitor;
-import hmin306.tp4.astparser.util.GraphAST;
+import hmin306.tp4.structure.tree.InvocationTree;
+import hmin306.tp4.structure.tree.MethodTree;
 
 public class Main
 {
 	private static final String	LINE_SEPARATOR				= System.getProperty("line.separator");
+	
 	private final static String	WINDOB_PROJECT_SOURCE_FOLDER	= "D:\\workspace\\JapScanDownloader\\src";
 	private final static String	WINDOB_ENVIRONMENT_CLASS_PATH	= "D:\\workspace\\HMIN306_TP4";
 	private final static String	WINDOB_ENVIRONMENT_SOURCES	= "D:\\workspace\\HMIN306_TP4";
@@ -64,11 +64,7 @@ public class Main
 		System.out.println("classesReferences : " + CustomASTVisitor.getClassesReferences());
 
 		System.out.println("projectClass : " + ClassVisitor.getProjectClass());
-
-		GraphAST frame = new GraphAST(astParserExample.getCustomASTVisitor().getTreeStructures());
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(800, 740);
-		frame.setVisible(true);
-
+		
+		System.out.println(CustomASTVisitor.getclassTree().toString());
 	}
 }
