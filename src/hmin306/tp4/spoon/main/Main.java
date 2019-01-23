@@ -9,13 +9,12 @@ import hmin306.tp4.spoon.example.SpoonExample;
 
 public class Main
 {
-	//private final static String	WINDOB_PROJECT_SOURCE_FOLDER	= "D:\\workspace\\JapScanDownloader\\src";
-
-	private final static String	WINDOB_PROJECT_SOURCE_FOLDER	= ".\\src";
+	private final static String	WINDOB_PROJECT_JAPSCANDOWNLOADER_PROJECT	= "D:\\workspace\\JapScanDownloader\\src";
+	private final static String	WINDOB_PROJECT_SELF_PROJECT	= ".\\src";
 
 	public static void main(String[] Args) throws IOException
 	{		
-		SpoonExample<Void> spoonExample = new SpoonExample<Void>(WINDOB_PROJECT_SOURCE_FOLDER);
+		SpoonExample<Void> spoonExample = new SpoonExample<Void>(WINDOB_PROJECT_JAPSCANDOWNLOADER_PROJECT);
 		
 		spoonExample.analyse();
 		

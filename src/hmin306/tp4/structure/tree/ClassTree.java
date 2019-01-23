@@ -10,6 +10,21 @@ public class ClassTree
 {
 	public Map<String, MethodTree> classTree = new TreeMap<String, MethodTree>();
 
+	public void addClassDeclaration(String classDeclaration)
+	{
+		if(classTree.get(classDeclaration) == null)
+			classTree.put(classDeclaration, new MethodTree());	
+	}
+	
+	public void addMethodDeclaration(String classDeclaration, String methodDeclaration)
+	{
+		if(classTree.get(classDeclaration) == null)
+			classTree.put(classDeclaration, new MethodTree());
+		
+		if(classTree.get(classDeclaration).methodTree.get(methodDeclaration) == null)
+			classTree.get(classDeclaration).methodTree.put(methodDeclaration, new InvocationTree());
+	}
+	
 	public void addMethodInvocation(String classDeclaration, String methodDeclaration, String classOfMethodInvocation, String methodInvocation)
 	{
 		if(classTree.get(classDeclaration) == null)

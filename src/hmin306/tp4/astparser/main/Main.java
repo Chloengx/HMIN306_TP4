@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Map.Entry;
 
+import javax.swing.JFrame;
+
 import hmin306.tp4.astparser.example.ASTParserExample;
 import hmin306.tp4.astparser.example.visitor.ClassVisitor;
 import hmin306.tp4.astparser.example.visitor.CustomASTVisitor;
+import hmin306.tp4.graphe.GraphAST;
 import hmin306.tp4.structure.tree.InvocationTree;
 import hmin306.tp4.structure.tree.MethodTree;
 
@@ -14,7 +17,9 @@ public class Main
 {
 	private static final String	LINE_SEPARATOR				= System.getProperty("line.separator");
 	
-	private final static String	WINDOB_PROJECT_SOURCE_FOLDER	= "D:\\workspace\\JapScanDownloader\\src";
+	private final static String	WINDOB_PROJECT_JAPSCANDOWNLOADER_PROJECT	= "D:\\workspace\\JapScanDownloader\\src";
+	private final static String	WINDOB_PROJECT_SELF_PROJECT	= ".\\src";
+	
 	private final static String	WINDOB_ENVIRONMENT_CLASS_PATH	= "D:\\workspace\\HMIN306_TP4";
 	private final static String	WINDOB_ENVIRONMENT_SOURCES	= "D:\\workspace\\HMIN306_TP4";
 
@@ -28,7 +33,7 @@ public class Main
 
 	public static void main(String[] args) throws IOException
 	{
-		ASTParserExample astParserExample = new ASTParserExample(WINDOB_PROJECT_SOURCE_FOLDER,
+		ASTParserExample astParserExample = new ASTParserExample(WINDOB_PROJECT_JAPSCANDOWNLOADER_PROJECT,
 			WINDOB_ENVIRONMENT_CLASS_PATH, WINDOB_ENVIRONMENT_SOURCES);
 
 		astParserExample.initialize();
@@ -66,5 +71,10 @@ public class Main
 		System.out.println("projectClass : " + ClassVisitor.getProjectClass());
 		
 		System.out.println(CustomASTVisitor.getclassTree().toString());
+		
+		GraphAST frame = new GraphAST(CustomASTVisitor.getclassTree());
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(800, 740);
+		frame.setVisible(true);
 	}
 }

@@ -44,18 +44,28 @@ public class SpoonExample <T>
 	{
 		Collection<CtMethod<?>> methods = ctType.getMethods();
 		
-		for(CtMethod<?> method : methods)
-			for(CtInvocation<?> methodInvocation : (List<CtInvocation>) Query.getElements(method, new TypeFilter<CtInvocation>(CtInvocation.class)))
+		classTree.addClassDeclaration(ctType.getQualifiedName());
+		
+		for(CtMethod<?> methodDeclaration : methods)
+		{
+			classTree.addMethodDeclaration(ctType.getQualifiedName(), methodDeclaration.getSimpleName());
+			
+			for(CtInvocation<?> methodInvocation : (List<CtInvocation>) Query.getElements(methodDeclaration, new TypeFilter<CtInvocation>(CtInvocation.class)))
+			{
 				if(methodInvocation.getTarget().getType() != null)
 					if(isProjectClass(methodInvocation.getTarget().getType().toString()))
-						classTree.addMethodInvocation(ctType.getQualifiedName(), method.getSimpleName(), methodInvocation.getTarget().getType().toString(), methodInvocation.getExecutable().getSimpleName());
+						classTree.addMethodInvocation(ctType.getQualifiedName(), methodDeclaration.getSimpleName(), methodInvocation.getTarget().getType().toString(), methodInvocation.getExecutable().getSimpleName());
+			}
+		}
 	}
 	
 	public boolean isProjectClass(String className)
 	{
 		for(CtType<?> ctType : launcher.getFactory().Type().getAll())
+		{
 			if(ctType.getQualifiedName().equals(className))
 				return true;
+		}
 		
 		return false;
 	}

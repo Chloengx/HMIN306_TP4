@@ -77,6 +77,8 @@ public class CustomASTVisitor extends ASTVisitor
 	public boolean visit(TypeDeclaration node)
 	{
 		SimpleName className = node.getName();
+		
+		classTree.addClassDeclaration(node.getName().toString());
 
 		currentClassName = className.toString();
 
@@ -91,25 +93,15 @@ public class CustomASTVisitor extends ASTVisitor
 		lineCounter += localLineCounter;
 		classCounter++;
 
-		/*
-		 * for(Object object : node.superInterfaceTypes()) System.out.println(object);
-		 */
-
-		/*
-		 * for(FieldDeclaration fieldDeclaration : node.getFields()) System.out.println(
-		 * fieldDeclaration.fragments().get(0) + " - " +
-		 * fieldDeclaration.modifiers().toString());
-		 */
 		attributeCounter += node.getFields().length;
 
 		classWithManyAttributes.add(new SetType(className.toString(), node.getFields().length));
 
 		for (MethodDeclaration methodDeclaration : node.getMethods())
 		{
-			/*
-			 * System.out.println(methodDeclaration.getName() + " - " +
-			 * methodDeclaration.getReturnType2() + " - " + methodDeclaration.parameters());
-			 */
+			classTree.addMethodDeclaration(node.getName().toString(), methodDeclaration.getName().toString());
+
+			
 			if (methodDeclaration.parameters().size() > maximumMethodParameter)
 				maximumMethodParameter = methodDeclaration.parameters().size();
 
@@ -139,74 +131,6 @@ public class CustomASTVisitor extends ASTVisitor
 
 		return true;
 	}
-//
-//	public void endVisit(MethodInvocation methodInvocation)
-//	{
-//		try
-//		{
-//			ASTNode parent = methodInvocation.getParent();
-//
-//			if (parent == null)
-//				return;
-//
-//			while (parent.getNodeType() != 31)
-//			{
-//				parent = parent.getParent();
-//
-//				if (parent == null)
-//					return;
-//			}
-//
-//			MethodDeclaration methodDeclaration = (MethodDeclaration) parent;
-//
-//			parent = methodInvocation.getParent();
-//
-//			if (parent == null)
-//				return;
-//
-//			while (parent.getNodeType() != 55)
-//				parent = parent.getParent();
-//
-//			TypeDeclaration typeDeclaration = (TypeDeclaration) parent;
-//
-////			if(classTree.get(typeDeclaration.getName().toString()).declarationInvocations
-////				.get(methodDeclaration.getName().toString()) == null)
-////				classTree.get(typeDeclaration.getName().toString()).declarationInvocations
-////					.put(methodDeclaration.getName().toString(), new TreeSet<TreeNode>());
-//
-//			// System.out.println("METHODINVOCATION : " +
-//			// methodInvocation.getName().toString());
-////
-////			classTree.get(typeDeclaration.getName().toString()).declarationInvocations
-////				.get(methodDeclaration.getName().toString())
-////				.add(new TreeNode("", methodInvocation.getName().toString()));
-//
-//			// methodMethods.get(methodDeclaration.getName().toString()).add(methodInvocation.getName().toString());
-//
-//			Expression expression = methodInvocation.getExpression();
-//
-//			if (expression != null)
-//			{
-//				ITypeBinding typeBinding = expression.resolveTypeBinding();
-//
-//				System.out.println("expression : " + expression);
-//				System.out.println("typeBinding : " + typeBinding);
-//
-//				// expression.resolveTypeBinding();
-//
-//				// System.out.println("Expression : " +
-//				// methodInvocation.getExpression());
-//				// System.out.println("TypeBinding: " +
-//				// typeBinding);
-//				// System.out.println("Type: " +
-//				// typeBinding.toString());
-//			}
-//
-//		} catch (NullPointerException nullPointerException)
-//		{
-//			nullPointerException.printStackTrace();
-//		}
-//	}
 
 	public boolean visit(MethodInvocation methodInvocation)
 	{
