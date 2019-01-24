@@ -16,72 +16,59 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
-import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import hmin306.tp4.structure.SetType;
-import hmin306.tp4.structure.Triplet;
+import hmin306.tp4.structure.coupling.CouplingStructure;
 import hmin306.tp4.structure.tree.ClassTree;
+import spoon.reflect.declaration.CtType;
 
 public class CustomASTVisitor extends ASTVisitor
 {
-	private final static int PERCENT = 20;
+	public final static int PERCENT = 20;
 
-	private final static int X = 2;
+	public final static int X = 2;
 
-	// DATA
+	// METRICS
 
-	private static int classCounter = 0;
-	private static int lineCounter = 0;
-	private static int methodCounter = 0;
-	private static int packageCounter = 0;
+	public static int classCounter = 0;
+	public static int lineCounter = 0;
+	public static int methodCounter = 0;
+	public static int packageCounter = 0;
 
-	private static List<String> percentClassWithManyMethods = new ArrayList<String>();
-	private static List<String> percentClassWithManyAttributes = new ArrayList<String>();
+	public static List<String> percentClassWithManyMethods = new ArrayList<String>();
+	public static List<String> percentClassWithManyAttributes = new ArrayList<String>();
 
-	private static Collection<String> classWithManyMethodsAndAttributes = new ArrayList<String>();
+	public static Collection<String> classWithManyMethodsAndAttributes = new ArrayList<String>();
 
-	private static Collection<String> classWithMoreThanXMethods = new ArrayList<String>();
-	private static Collection<String> percentMethodsWithLargestCode = new ArrayList<String>();
+	public static Collection<String> classWithMoreThanXMethods = new ArrayList<String>();
+	public static Collection<String> percentMethodsWithLargestCode = new ArrayList<String>();
 
-	private static int maximumMethodParameter = 0;
+	public static int maximumMethodParameter = 0;
+	public static String maximumMethodParameterName = "";
 
-	private static Map<String, Collection<String>> classMethods = new TreeMap<String, Collection<String>>();
-	private static Map<String, Collection<String>> methodMethods = new TreeMap<String, Collection<String>>();
+	public static Map<String, Collection<String>> classMethods = new TreeMap<String, Collection<String>>();
+	public static Map<String, Collection<String>> methodMethods = new TreeMap<String, Collection<String>>();
 
 	public static ClassTree classTree = new ClassTree();
 
-	private static TreeSet<SetType> classWithManyMethods = new TreeSet<SetType>();
-	private static TreeSet<SetType> classWithManyAttributes = new TreeSet<SetType>();
-	private static TreeSet<SetType> methodsWithLargestCode = new TreeSet<SetType>();
+	public static TreeSet<SetType> classWithManyMethods = new TreeSet<SetType>();
+	public static TreeSet<SetType> classWithManyAttributes = new TreeSet<SetType>();
+	public static TreeSet<SetType> methodsWithLargestCode = new TreeSet<SetType>();
 
-	private static int attributeCounter = 0;
-	private static TreeSet<String> packages = new TreeSet<String>();
-	private static int methodLineCounter = 0;
-
-	private static List<Triplet> classesReferences = new ArrayList<Triplet>();
-
-	private String currentPackageName;
-	private String currentClassName;
+	public static int attributeCounter = 0;
+	public static int methodLineCounter = 0;
 	
-	public boolean visit(PackageDeclaration node)
-	{
-		packages.add(node.getName().toString());
-		packageCounter++;
+	// END METRICS
 
-		currentPackageName = node.getName().toString();
-
-		return true;
-	}
+	public static CouplingStructure myCouplingStructure;
 
 	public boolean visit(TypeDeclaration node)
 	{
-		SimpleName className = node.getName();
+		String className = getQualifiedName(node.getName().toString());
 		
-		classTree.addClassDeclaration(node.getName().toString());
-
-		currentClassName = className.toString();
-
+		classTree.addClassDeclaration(className);
+		
 		classMethods.put(className.toString(), new ArrayList<String>());
 
 		int localLineCounter = node.toString().length()
@@ -98,12 +85,13 @@ public class CustomASTVisitor extends ASTVisitor
 		classWithManyAttributes.add(new SetType(className.toString(), node.getFields().length));
 
 		for (MethodDeclaration methodDeclaration : node.getMethods())
-		{
-			classTree.addMethodDeclaration(node.getName().toString(), methodDeclaration.getName().toString());
-
-			
+		{	
+			classTree.addMethodDeclaration(className, methodDeclaration.getName().toString());
 			if (methodDeclaration.parameters().size() > maximumMethodParameter)
+			{
 				maximumMethodParameter = methodDeclaration.parameters().size();
+				maximumMethodParameterName = methodDeclaration.getName().toString() + " (" + className + ")";
+			}
 
 			localLineCounter = methodDeclaration.getBody().toString().length()
 					- methodDeclaration.getBody().toString().replace(System.getProperty("line.separator"), "").length();
@@ -142,57 +130,15 @@ public class CustomASTVisitor extends ASTVisitor
 		ITypeBinding typeBinding = expression.resolveTypeBinding();
 
 		IMethodBinding methodBinding = methodInvocation.resolveMethodBinding();
-
+		
 		//Static call
 		if (methodBinding != null && (methodBinding.getModifiers() & Modifier.STATIC) > 0)
 		{
-			boolean exist = false;
-			int index;
-			String completeName = currentPackageName + "." + currentClassName;
-		
-			for (index = 0; index < classesReferences.size(); index++)
-				if (classesReferences.get(index).getClassFromName().equals(completeName)
-						&& classesReferences.get(index).getClassToName().equals(expression.toString()))
-				{
-					exist = true;
-					break;
-				}
-
-			if (exist)
-				classesReferences.get(index).incrementReferences();
-			else
-			{
-				if(ClassVisitor.getProjectClass().contains(currentPackageName + "." + currentClassName) && ClassVisitor.getProjectClass().contains(expression.toString()))
-					classesReferences.add(new Triplet(currentPackageName + "." + currentClassName, expression.toString()));
-			}
 		}
-		else if (typeBinding != null) //Call object
-		{
-			boolean exist = false;
-			int index;
-			String completeName = currentPackageName + "." + currentClassName;
-
-			for (index = 0; index < classesReferences.size(); index++)
-			{
-				if (classesReferences.get(index).getClassFromName().equals(completeName)
-						&& classesReferences.get(index).getClassToName().equals(typeBinding.getQualifiedName()))
-				{
-					exist = true;
-					break;
-				}
-			}	
-
-			if (exist)
-				classesReferences.get(index).incrementReferences();
-			else
-				if(ClassVisitor.getProjectClass().contains(currentPackageName + "." + currentClassName) && ClassVisitor.getProjectClass().contains(typeBinding.getQualifiedName()))
-					classesReferences.add(new Triplet(currentPackageName + "." + currentClassName, typeBinding.getQualifiedName()));
-		}
-		
-		if (typeBinding != null)
+		else if (typeBinding != null)
 		{
 			ASTNode parent = methodInvocation.getParent();
-	
+			
 			if (parent == null)
 				return true;
 	
@@ -205,7 +151,7 @@ public class CustomASTVisitor extends ASTVisitor
 			}
 	
 			MethodDeclaration methodDeclaration = (MethodDeclaration) parent;
-	
+			
 			parent = methodInvocation.getParent();
 	
 			if (parent == null)
@@ -215,15 +161,13 @@ public class CustomASTVisitor extends ASTVisitor
 				parent = parent.getParent();
 	
 			TypeDeclaration typeDeclaration = (TypeDeclaration) parent;
-	
-			classTree.addMethodInvocation(typeDeclaration.getName().toString(), methodDeclaration.getName().toString(), typeBinding.getName(), methodInvocation.getName().toString());
 			
-			//methodMethods.get(methodDeclaration.getName().toString()).add(methodInvocation.getName().toString());
-		}		
+			String qualifiedClassName = getQualifiedName(typeDeclaration.getName().toString());
+			
+			if(isProjectClass(getQualifiedName(typeBinding.getName())))
+				classTree.addMethodInvocation(qualifiedClassName, methodDeclaration.getName().toString(), getQualifiedName(typeBinding.getName()), methodInvocation.getName().toString());
+		}
 		
-		
-		/////////////////////////////
-
 		return true;
 	}
 
@@ -291,104 +235,25 @@ public class CustomASTVisitor extends ASTVisitor
 	{
 		return attributeCounter / classCounter;
 	}
-
-	public static int getClassCounter()
+	
+	public boolean isProjectClass(String className)
 	{
-		return classCounter;
+		return ClassVisitor.projectClass.contains(className);
 	}
-
-	public static int getLineCounter()
+	
+	public String getQualifiedName(String classNameToConvert)
 	{
-		return lineCounter;
-	}
-
-	public static int getMethodCounter()
-	{
-		return methodCounter;
-	}
-
-	public static int getPackageCounter()
-	{
-		return packageCounter;
-	}
-
-	public static List<String> getPercentClassWithManyMethods()
-	{
-		return percentClassWithManyMethods;
-	}
-
-	public static List<String> getPercentClassWithManyAttributes()
-	{
-		return percentClassWithManyAttributes;
-	}
-
-	public static Collection<String> getClassWithManyMethodsAndAttributes()
-	{
-		return classWithManyMethodsAndAttributes;
-	}
-
-	public static Collection<String> getClassWithMoreThanXMethods()
-	{
-		return classWithMoreThanXMethods;
-	}
-
-	public static Collection<String> getPercentMethodsWithLargestCode()
-	{
-		return percentMethodsWithLargestCode;
-	}
-
-	public static int getMaximumMethodParameter()
-	{
-		return maximumMethodParameter;
-	}
-
-	public static Map<String, Collection<String>> getClassMethods()
-	{
-		return classMethods;
-	}
-
-	public static Map<String, Collection<String>> getMethodMethods()
-	{
-		return methodMethods;
-	}
-
-	public static ClassTree getclassTree()
-	{
-		return classTree;
-	}
-
-	public static TreeSet<SetType> getClassWithManyMethods()
-	{
-		return classWithManyMethods;
-	}
-
-	public static TreeSet<SetType> getClassWithManyAttributes()
-	{
-		return classWithManyAttributes;
-	}
-
-	public static TreeSet<SetType> getMethodsWithLargestCode()
-	{
-		return methodsWithLargestCode;
-	}
-
-	public static int getAttributeCounter()
-	{
-		return attributeCounter;
-	}
-
-	public static TreeSet<String> getPackages()
-	{
-		return packages;
-	}
-
-	public static int getMethodLineCounter()
-	{
-		return methodLineCounter;
-	}
-
-	public static List<Triplet> getClassesReferences()
-	{
-		return classesReferences;
+		for(String qualifiedClassName : ClassVisitor.projectClass)
+		{
+			StringBuilder a = new StringBuilder(qualifiedClassName);
+			StringBuilder b = a.reverse();
+			String c = a.substring(0, b.indexOf("."));
+			String d = new StringBuilder(c).reverse().toString();
+			
+			if(d.equals(classNameToConvert))
+				return qualifiedClassName;
+		}
+		
+		return "";
 	}
 }

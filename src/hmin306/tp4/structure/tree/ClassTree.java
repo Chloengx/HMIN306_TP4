@@ -56,7 +56,7 @@ public class ClassTree
 				
 				for(Entry<String, Collection<String>> invocationEntry : methodEntry.getValue().invocationTree.entrySet())
 				{
-					toString.append("\t\t" + invocationEntry.getKey());
+					toString.append("\t\t" + invocationEntry.getKey() + " (" + invocationEntry.getValue().size() + ")");
 					toString.append(System.getProperty("line.separator"));
 					
 					for(String methodInvocation : invocationEntry.getValue())

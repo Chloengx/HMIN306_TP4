@@ -10,7 +10,7 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 public class ClassVisitor extends ASTVisitor
 {
-	private static Collection<String> projectClass = new ArrayList<String>();
+	public static Collection<String> projectClass = new ArrayList<String>();
 
 	private String currentPackageName;
 	
@@ -23,15 +23,11 @@ public class ClassVisitor extends ASTVisitor
 	
 	public boolean visit(TypeDeclaration node)
 	{
-		SimpleName className = node.getName();
+		String className = node.getName().toString();
 		
+		//projectClass.add(className);
 		projectClass.add(currentPackageName + "." + className.toString());
 
 		return true;
-	}
-
-	public static Collection<String> getProjectClass()
-	{
-		return projectClass;
 	}
 }

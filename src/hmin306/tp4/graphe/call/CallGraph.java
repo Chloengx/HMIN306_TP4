@@ -1,4 +1,4 @@
-package hmin306.tp4.graphe;
+package hmin306.tp4.graphe.call;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,14 +13,14 @@ import hmin306.tp4.structure.tree.ClassTree;
 import hmin306.tp4.structure.tree.InvocationTree;
 import hmin306.tp4.structure.tree.MethodTree;
 
-public class GraphAST extends JFrame
+public class CallGraph extends JFrame
 {
 	private static final long serialVersionUID = -2707712944901661771L;
 
 	private static final int	ROOT_X	= 200;
 	private static final int	ROOT_Y	= 20;
 
-	private static final int DEFAULT_SPACE = 300;
+	private static final int DEFAULT_SPACE = 150;
 
 	private static final int	CLASS_WIDTH	= 600;
 	private static final int	CLASS_HEIGHT	= 200;
@@ -33,9 +33,9 @@ public class GraphAST extends JFrame
 
 	private Collection<NodeContent> nodeContents = new ArrayList<NodeContent>();
 
-	public GraphAST(ClassTree treeStructure)
+	public CallGraph(String graphName, ClassTree treeStructure)
 	{
-		super("AST");
+		super("CallGraphe : " + graphName);
 
 		graph = new mxGraph();
 		parent = graph.getDefaultParent();
@@ -48,16 +48,15 @@ public class GraphAST extends JFrame
 		{
 
 			Object classFigure = graph.insertVertex(parent, null, classEntry.getKey(), ROOT_X + xCounter,
-				ROOT_Y + yCounter, CLASS_WIDTH, CLASS_HEIGHT, "fillColor=#ff8080;");
+				ROOT_Y + yCounter, CLASS_WIDTH, CLASS_HEIGHT, "fillColor=#b3e6ff");
 			
 			int methodCounter = 0;
 
 			for(Map.Entry<String, InvocationTree> methodDeclarationEntry : classEntry.getValue().methodTree
 				.entrySet())
 			{
-
 				Object methodFigure = graph.insertVertex(classFigure, null, methodDeclarationEntry.getKey(), methodCounter, 0,
-					METHOD_WIDTH, METHOD_HEIGHT);
+					METHOD_WIDTH, METHOD_HEIGHT, "fillColor=#ffcc80");
 
 				NodeContent nodeContent = new NodeContent(classEntry.getKey(), methodDeclarationEntry.getKey(),
 					methodFigure);

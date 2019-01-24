@@ -1,4 +1,4 @@
-package hmin306.tp4.graphe;
+package hmin306.tp4.graphe.call;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,7 +14,6 @@ public class NodeContent
 	
 	public NodeContent(String className, String methodName, Object methodFigure)
 	{
-		super();
 		this.className = className;
 		this.methodName = methodName;
 		

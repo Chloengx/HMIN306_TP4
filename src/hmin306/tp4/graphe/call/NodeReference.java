@@ -1,4 +1,4 @@
-package hmin306.tp4.graphe;
+package hmin306.tp4.graphe.call;
 
 public class NodeReference
 {
@@ -7,8 +7,6 @@ public class NodeReference
 	
 	public NodeReference(String className, String methodName)
 	{
-		super();
-		
 		this.className = className;
 		this.methodName = methodName;
 	}

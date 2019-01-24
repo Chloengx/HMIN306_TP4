@@ -1,22 +1,17 @@
 package hmin306.tp4.astparser.main;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Map.Entry;
 
 import javax.swing.JFrame;
 
 import hmin306.tp4.astparser.example.ASTParserExample;
-import hmin306.tp4.astparser.example.visitor.ClassVisitor;
 import hmin306.tp4.astparser.example.visitor.CustomASTVisitor;
-import hmin306.tp4.graphe.GraphAST;
-import hmin306.tp4.structure.tree.InvocationTree;
-import hmin306.tp4.structure.tree.MethodTree;
+import hmin306.tp4.graphe.call.CallGraph;
+import hmin306.tp4.graphe.coupling.CouplingGraph;
+import hmin306.tp4.structure.coupling.CouplingStructure;
 
-public class Main
+public class ASTParserMain
 {
-	private static final String	LINE_SEPARATOR				= System.getProperty("line.separator");
-	
 	private final static String	WINDOB_PROJECT_JAPSCANDOWNLOADER_PROJECT	= "D:\\workspace\\JapScanDownloader\\src";
 	private final static String	WINDOB_PROJECT_SELF_PROJECT	= ".\\src";
 	
@@ -37,44 +32,53 @@ public class Main
 			WINDOB_ENVIRONMENT_CLASS_PATH, WINDOB_ENVIRONMENT_SOURCES);
 
 		astParserExample.initialize();
-
-		System.out.println(LINE_SEPARATOR);
-		System.out.println("--- Result --- ");
-		System.out.println(LINE_SEPARATOR);
-
-		System.out.println("classCounter : " + CustomASTVisitor.getClassCounter());
-		System.out.println("lineCounter : " + CustomASTVisitor.getLineCounter());
-		System.out.println("methodCounter : " + CustomASTVisitor.getMethodCounter());
-		System.out.println("packageCounter : " + CustomASTVisitor.getPackageCounter());
-
+		
+		//showMetrics();
+		
+		//showCallGraph();
+		
+		showCouplingGraph();
+	}
+	
+	public static void showMetrics()
+	{
+		System.out.println("classCounter : " + CustomASTVisitor.classCounter);
+		System.out.println("lineCounter : " + CustomASTVisitor.lineCounter);
+		System.out.println("methodCounter : " + CustomASTVisitor.methodCounter);
+		System.out.println("packageCounter : " + CustomASTVisitor.packageCounter);
 		System.out.println("methodAverage : " + CustomASTVisitor.getMethodsAverage());
 		System.out.println("codeLineMethodAverage : " + CustomASTVisitor.getCodeLineMethodAverage());
 		System.out.println("attributeAverage : " + CustomASTVisitor.getAttributeAverage());
 
 		System.out.println(PERCENT + "% of class with many Methods : "
-			+ CustomASTVisitor.getPercentClassWithManyMethods().toString());
+			+ CustomASTVisitor.percentClassWithManyMethods.toString());
 		System.out.println(PERCENT + "% of class with many Attributes : "
-			+ CustomASTVisitor.getPercentClassWithManyAttributes().toString());
+			+ CustomASTVisitor.percentClassWithManyAttributes.toString());
 
 		System.out.println("classWithManyMethodsAndAttributes : "
-			+ CustomASTVisitor.getClassWithManyMethodsAndAttributes().toString());
+			+ CustomASTVisitor.classWithManyMethodsAndAttributes.toString());
 
 		System.out.println("class With More Than " + X + " Methods : "
-			+ CustomASTVisitor.getClassWithMoreThanXMethods().toString());
+			+ CustomASTVisitor.classWithMoreThanXMethods.toString());
 		System.out.println(PERCENT + "% of Methods with largest code (by number of line) : "
-			+ CustomASTVisitor.getPercentMethodsWithLargestCode().toString());
+			+ CustomASTVisitor.methodsWithLargestCode.toString());
 
-		System.out.println("maximumMethodParameter : " + CustomASTVisitor.getMaximumMethodParameter());
-
-		System.out.println("classesReferences : " + CustomASTVisitor.getClassesReferences());
-
-		System.out.println("projectClass : " + ClassVisitor.getProjectClass());
-		
-		System.out.println(CustomASTVisitor.getclassTree().toString());
-		
-		GraphAST frame = new GraphAST(CustomASTVisitor.getclassTree());
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(800, 740);
-		frame.setVisible(true);
+		System.out.println("maximumMethodParameter : " + CustomASTVisitor.maximumMethodParameter + " : " + CustomASTVisitor.maximumMethodParameterName);
+	}
+	
+	public static void showCallGraph()
+	{
+		CallGraph graph = new CallGraph("Spoon", CustomASTVisitor.classTree);
+		graph.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		graph.setSize(800, 740);
+		graph.setVisible(true);
+	}
+	
+	public static void showCouplingGraph()
+	{
+		CouplingGraph graph = new CouplingGraph("Spoon", CustomASTVisitor.classTree, new CouplingStructure(CustomASTVisitor.classTree));
+		graph.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		graph.setSize(800, 740);
+		graph.setVisible(true);
 	}
 }

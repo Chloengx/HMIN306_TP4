@@ -7,6 +7,7 @@ import java.util.Collection;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import hmin306.tp4.astparser.example.visitor.ClassVisitor;
@@ -55,7 +56,7 @@ public class ASTParserExample
 
 	public void initialize() throws IOException
 	{
-		exploreProject(sourcePath);
+		this.exploreProject(sourcePath);
 		parseProject();
 
 		CustomASTVisitor.percentOfClassWithManyMethods();
@@ -78,10 +79,13 @@ public class ASTParserExample
 	public void parseProject() throws IOException
 	{
 		for (String sourceFile : sourceFiles)
-			parseFile(sourceFile);
+			parseFile(sourceFile, new ClassVisitor());
+		
+		for (String sourceFile : sourceFiles)
+			parseFile(sourceFile, new CustomASTVisitor());
 	}
 
-	private void parseFile(String sourceFile) throws IOException
+	private void parseFile(String sourceFile, ASTVisitor astVisitor) throws IOException
 	{
 		String[] environmentClassPathFormated =
 		{ this.environmentClassPath };
@@ -103,28 +107,7 @@ public class ASTParserExample
 
 		CompilationUnit compilationUnit = (CompilationUnit) astParser.createAST(null);
 
-		ClassVisitor classVisitor = new ClassVisitor();
-
-		compilationUnit.accept(classVisitor);
-		
-		astParser = ASTParser.newParser(AST.JLS10);
-		astParser.setResolveBindings(true);
-		astParser.setKind(ASTParser.K_COMPILATION_UNIT);
-
-		astParser.setBindingsRecovery(true);
-
-		astParser.setUnitName(UNIT_NAME);
-
-		astParser.setEnvironment(environmentClassPathFormated, environmentSourcesFormated, new String[]
-		{ ENCODING }, true);
-
-		astParser.setSource(ParsingHelper.fileToString(sourceFile).toCharArray());
-
-		compilationUnit = (CompilationUnit) astParser.createAST(null);
-
-		CustomASTVisitor customASTVisitor = new CustomASTVisitor();
-
-		compilationUnit.accept(customASTVisitor);
+		compilationUnit.accept(astVisitor);
 	}
 
 	public CustomASTVisitor getCustomASTVisitor()

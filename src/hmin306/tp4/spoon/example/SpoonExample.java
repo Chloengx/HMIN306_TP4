@@ -3,8 +3,7 @@ package hmin306.tp4.spoon.example;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.jdt.core.dom.IMethodBinding;
-
+import hmin306.tp4.structure.coupling.CouplingStructure;
 import hmin306.tp4.structure.tree.ClassTree;
 import spoon.Launcher;
 import spoon.reflect.code.CtInvocation;
@@ -15,29 +14,32 @@ import spoon.reflect.visitor.filter.TypeFilter;
 
 public class SpoonExample <T>
 {
-	private ClassTree classTree = new ClassTree();
+	public ClassTree classTree = new ClassTree();
+	
+	public CouplingStructure couplingStructure;
+	
+	public int classCounter = 0;
+	public int methodCounter = 0;
+	public int methodPerClassAverage;
 	
 	private Launcher launcher = new Launcher();
 	
-	/**
-	 * Constructor
-	 * @param classFilePath Path where found .java file
-	 * @param className Name of the search class into classFilePath
-	 */
 	public SpoonExample(String sourcePath)
 	{			
 		launcher.getEnvironment().setNoClasspath(true);
 
 		launcher.addInputResource(sourcePath);
 		launcher.buildModel();
-
-		//ctClass = (CtClass<T>) launcher.getFactory().Type().get(className);
 	}
 	
 	public void analyse()
 	{
 		for(CtType<?> ctType : launcher.getFactory().Type().getAll())
 			analyse(ctType);
+		
+		couplingStructure = new CouplingStructure(classTree);
+		 
+		methodPerClassAverage = methodCounter/classCounter;
 	}
 	
 	private void analyse(CtType<?> ctType)
@@ -46,13 +48,18 @@ public class SpoonExample <T>
 		
 		classTree.addClassDeclaration(ctType.getQualifiedName());
 		
+		classCounter++;
+		
 		for(CtMethod<?> methodDeclaration : methods)
 		{
+			methodCounter++;
+			
 			classTree.addMethodDeclaration(ctType.getQualifiedName(), methodDeclaration.getSimpleName());
 			
 			for(CtInvocation<?> methodInvocation : (List<CtInvocation>) Query.getElements(methodDeclaration, new TypeFilter<CtInvocation>(CtInvocation.class)))
 			{
-				if(methodInvocation.getTarget().getType() != null)
+				if(methodInvocation.getTarget() != null && 
+					methodInvocation.getTarget().getType() != null)
 					if(isProjectClass(methodInvocation.getTarget().getType().toString()))
 						classTree.addMethodInvocation(ctType.getQualifiedName(), methodDeclaration.getSimpleName(), methodInvocation.getTarget().getType().toString(), methodInvocation.getExecutable().getSimpleName());
 			}
@@ -62,16 +69,9 @@ public class SpoonExample <T>
 	public boolean isProjectClass(String className)
 	{
 		for(CtType<?> ctType : launcher.getFactory().Type().getAll())
-		{
 			if(ctType.getQualifiedName().equals(className))
 				return true;
-		}
 		
 		return false;
-	}
-	
-	public ClassTree getClassTree()
-	{
-		return classTree;
 	}
 }
