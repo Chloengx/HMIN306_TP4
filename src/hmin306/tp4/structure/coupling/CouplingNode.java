@@ -1,5 +1,7 @@
 package hmin306.tp4.structure.coupling;
 
+import hmin306.tp4.dendrogram.*;
+
 public class CouplingNode
 {
 	public String classNameA;
@@ -9,8 +11,7 @@ public class CouplingNode
 	public Object classFigureB;
 	
 	public int counter;
-	
-	
+
 	public CouplingNode(String classNameA, String classNameB, int counter)
 	{
 		this.classNameA = classNameA;
@@ -28,5 +29,18 @@ public class CouplingNode
 		
 		return (classNameA.equals(couplingNode.classNameA) && classNameB.equals(couplingNode.classNameB)) ||
 			(classNameA.equals(couplingNode.classNameB) && classNameB.equals(couplingNode.classNameA));
+	}
+	
+	@Override
+	public String toString()
+	{
+		StringBuilder toString = new StringBuilder();
+		
+		toString.append(classNameA);
+		toString.append(System.getProperty("line.separator"));
+		toString.append(classNameB);
+		toString.append(System.getProperty("line.separator"));
+		toString.append(counter);
+		return toString.toString();
 	}
 }

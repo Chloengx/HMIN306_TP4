@@ -16,17 +16,17 @@ public class DendrogramPaintPanel extends JPanel
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private static <T> Node<T> create(T contents)
+	private static <T> DendrogramNode<T> create(T contents)
 	{
-		return new Node<T>(contents);
+		return new DendrogramNode<T>(contents);
 	}
 
-	private static <T> Node<T> create(Node<T> child0, Node<T> child1)
+	private static <T> DendrogramNode<T> create(DendrogramNode<T> child0, DendrogramNode<T> child1)
 	{
-		return new Node<T>(child0, child1);
+		return new DendrogramNode<T>(child0, child1);
 	}
 
-	private Node<String>	root;
+	private DendrogramNode<String>	root;
 	private int			leaves;
 	private int			levels;
 	private int			heightPerLeaf;
@@ -43,27 +43,27 @@ public class DendrogramPaintPanel extends JPanel
 				create(create("4"), create(create("3"), create(create("2"), create("1"))))));
 	}
 
-	private static <T> int countLeaves(Node<T> node)
+	private static <T> int countLeaves(DendrogramNode<T> node)
 	{
-		List<Node<T>> children = node.getChildren();
+		List<DendrogramNode<T>> children = node.getChildren();
 		if(children.size() == 0)
 		{
 			return 1;
 		}
-		Node<T> child0 = children.get(0);
-		Node<T> child1 = children.get(1);
+		DendrogramNode<T> child0 = children.get(0);
+		DendrogramNode<T> child1 = children.get(1);
 		return countLeaves(child0) + countLeaves(child1);
 	}
 
-	private static <T> int countLevels(Node<T> node)
+	private static <T> int countLevels(DendrogramNode<T> node)
 	{
-		List<Node<T>> children = node.getChildren();
+		List<DendrogramNode<T>> children = node.getChildren();
 		if(children.size() == 0)
 		{
 			return 1;
 		}
-		Node<T> child0 = children.get(0);
-		Node<T> child1 = children.get(1);
+		DendrogramNode<T> child0 = children.get(0);
+		DendrogramNode<T> child1 = children.get(1);
 		return 1 + Math.max(countLevels(child0), countLevels(child1));
 	}
 
@@ -83,9 +83,9 @@ public class DendrogramPaintPanel extends JPanel
 		draw(g, root, 0);
 	}
 
-	private <T> Point draw(Graphics g, Node<T> node, int y)
+	private <T> Point draw(Graphics g, DendrogramNode<T> node, int y)
 	{
-		List<Node<T>> children = node.getChildren();
+		List<DendrogramNode<T>> children = node.getChildren();
 		if(children.size() == 0)
 		{
 			int x = getWidth() - widthPerLevel - 2 * margin;
@@ -97,8 +97,8 @@ public class DendrogramPaintPanel extends JPanel
 		}
 		if(children.size() >= 2)
 		{
-			Node<T> child0 = children.get(0);
-			Node<T> child1 = children.get(1);
+			DendrogramNode<T> child0 = children.get(0);
+			DendrogramNode<T> child1 = children.get(1);
 			Point p0 = draw(g, child0, y);
 			Point p1 = draw(g, child1, y + heightPerLeaf);
 

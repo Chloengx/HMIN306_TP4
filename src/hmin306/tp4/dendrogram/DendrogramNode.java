@@ -4,22 +4,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-class Node<T> 
+public class DendrogramNode<T> 
 {
-    private final T contents;
-    private final List<Node<T>> children;
+    public final T contents;
+    public final List<DendrogramNode<T>> children;
 
-    Node(T contents)
+    DendrogramNode(T contents)
     {
         this.contents = contents;
         this.children = Collections.emptyList();
     }
 
-    Node(Node<T> child0, Node<T> child1)
+    DendrogramNode(DendrogramNode<T> child0, DendrogramNode<T> child1)
     {
         this.contents = null;
 
-        List<Node<T>> list = new ArrayList<Node<T>>();
+        List<DendrogramNode<T>> list = new ArrayList<DendrogramNode<T>>();
         list.add(child0);
         list.add(child1);
         this.children = Collections.unmodifiableList(list);
@@ -30,7 +30,7 @@ class Node<T>
         return contents;
     }
 
-    public List<Node<T>> getChildren()
+    public List<DendrogramNode<T>> getChildren()
     {
         return Collections.unmodifiableList(children);
     }

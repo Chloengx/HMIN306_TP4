@@ -27,7 +27,7 @@ public class SpoonMain
 		
 		//showCouplingGraph(spoonExample);
 		
-		showDendrogram(spoonExample);
+		//showDendrogram(spoonExample);
 	}
 	
 	public static void showMetrics(SpoonExample spoonExample)
