@@ -12,15 +12,13 @@ import hmin306.tp4.structure.coupling.CouplingStructure;
 
 public class ASTParserMain
 {
-	private final static String	WINDOB_PROJECT_JAPSCANDOWNLOADER_PROJECT	= "D:\\workspace\\JapScanDownloader\\src";
-	private final static String	WINDOB_PROJECT_SELF_PROJECT	= ".\\src";
-	
-	private final static String	WINDOB_ENVIRONMENT_CLASS_PATH	= "D:\\workspace\\HMIN306_TP4";
-	private final static String	WINDOB_ENVIRONMENT_SOURCES	= "D:\\workspace\\HMIN306_TP4";
+	private final static String	WINDOWS_PROJECT_SELF_PROJECT	= ".\\src";
+	private final static String	WINDOWS_ENVIRONMENT_CLASS_PATH	= "..";
+	private final static String	WINDOWS_ENVIRONMENT_SOURCES	= "..";
 
-	private final static String	LINUX_PROJECT_SOURCE_FOLDER	= "/home/harkame/workspace/JapScanDownloader/src";
-	private final static String	LINUX_ENVIRONMENT_CLASS_PATH	= "/home/harkame/workspace/HMIN306_TP4";
-	private final static String	LINUX_ENVIRONMENT_SOURCES	= "/home/harkame/workspace/HMIN306_TP4";
+	private final static String	LINUX_SELF_PROJECT	= "./src";
+	private final static String	LINUX_ENVIRONMENT_CLASS_PATH	= "..";
+	private final static String	LINUX_ENVIRONMENT_SOURCES	= "..";
 
 	private final static int PERCENT = 20;
 
@@ -28,14 +26,14 @@ public class ASTParserMain
 
 	public static void main(String[] args) throws IOException
 	{
-		ASTParserExample astParserExample = new ASTParserExample(WINDOB_PROJECT_JAPSCANDOWNLOADER_PROJECT,
-			WINDOB_ENVIRONMENT_CLASS_PATH, WINDOB_ENVIRONMENT_SOURCES);
+		ASTParserExample astParserExample = new ASTParserExample(WINDOWS_PROJECT_SELF_PROJECT,
+			WINDOWS_ENVIRONMENT_CLASS_PATH, WINDOWS_ENVIRONMENT_SOURCES);
 
 		astParserExample.initialize();
 		
-		//showMetrics();
+		showMetrics();
 		
-		//showCallGraph();
+		showCallGraph();
 		
 		showCouplingGraph();
 	}

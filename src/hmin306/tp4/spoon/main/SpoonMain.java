@@ -12,22 +12,22 @@ import hmin306.tp4.dendrogram.*;
 
 public class SpoonMain
 {
-	private final static String	WINDOB_PROJECT_JAPSCANDOWNLOADER_PROJECT	= "D:\\workspace\\JapScanDownloader\\src";
-	private final static String	WINDOB_PROJECT_SELF_PROJECT	= ".\\src";
-
+	private final static String	WINDOWS_PROJECT_SELF_PROJECT	= ".\\src";
+	private final static String	LINUX_SELF_PROJECT	= "./src";
+	
 	public static void main(String[] Args) throws IOException
 	{		
-		SpoonExample<Void> spoonExample = new SpoonExample<Void>(WINDOB_PROJECT_JAPSCANDOWNLOADER_PROJECT);
+		SpoonExample<Void> spoonExample = new SpoonExample<Void>(WINDOWS_PROJECT_SELF_PROJECT);
 		
 		spoonExample.analyse();
 
-		//showMetrics(spoonExample);
+		showMetrics(spoonExample);
 		
-		//showCallGraph(spoonExample);
+		showCallGraph(spoonExample);
 		
-		//showCouplingGraph(spoonExample);
+		showCouplingGraph(spoonExample);
 		
-		//showDendrogram(spoonExample);
+		showDendrogram(spoonExample);
 	}
 	
 	public static void showMetrics(SpoonExample spoonExample)
