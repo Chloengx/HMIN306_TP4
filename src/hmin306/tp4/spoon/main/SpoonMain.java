@@ -13,6 +13,7 @@ import hmin306.tp4.dendrogram.*;
 public class SpoonMain
 {
 	private final static String	WINDOWS_PROJECT_SELF_PROJECT	= ".\\src";
+	
 	private final static String	LINUX_SELF_PROJECT	= "./src";
 	
 	public static void main(String[] Args) throws IOException
