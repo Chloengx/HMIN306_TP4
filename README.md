@@ -48,11 +48,24 @@ Nous avons cependant commencé en prenant connaissance de comment afficher un de
 
 # Code (packages)
 
++ spoon : La partie avec Spoon
+
 + astparser : La partie avec ASTParser
-+ structure : Nos différentes structure pour afficher le graphe/calculer certaine métrique
-+ graph : La partie affichage des graphes (appel et couplage)
+	+ astparser : La partie analyse avec ASTParser (récupération des données, etc)
+		+ example : Analyse du code (récupération des métriques, etc)
+			+ visitor : Nos Visiteurs pour analyser un projet
+		+ main : Le Main de la partie ASTParser
+		+ util : Des méthodes utiles pour certaine étapes de l'analyse
++ structure : Nos différentes structures pour afficher le graphe/calculer certaine métrique
+  + coupling : La structure pour le graphe de couplage
+  + tree : La structure général de notre analyse ({Class} -> {MethodDeclaration} -> {OtherClassReference} -> {MethodInvocation}) ou {} désigne un ensemble
++ graph : La partie affichage des graphes
+  + call : Le graphe d'appel
+  + coupling : Le graphe de couplage
 + dendrogram : La partie affichage/calcul du dendrogram
 + spoon : La partie avec Spoon
+  + example : Analyse du code (récupération des métriques, etc)
+  + main  : Le main de la partie Spoon
 
 # Librairie
 
