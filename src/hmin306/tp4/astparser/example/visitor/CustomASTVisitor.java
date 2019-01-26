@@ -21,7 +21,6 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import hmin306.tp4.structure.SetType;
 import hmin306.tp4.structure.coupling.CouplingStructure;
 import hmin306.tp4.structure.tree.ClassTree;
-import spoon.reflect.declaration.CtType;
 
 public class CustomASTVisitor extends ASTVisitor
 {
