@@ -46,6 +46,14 @@ Nous n'avons pas réussi cet exercice
 
 Nous avons cependant commencé en prenant connaissance de comment afficher un dendrogramme sous Java (sans librairie) et une esquisse d'algorithme.
 
+# Code (packages)
+
++ astparser : La partie avec ASTParser
++ structure : Nos différentes structure pour afficher le graphe/calculer certaine métrique
++ graph : La partie affichage des graphes (appel et couplage)
++ dendrogram : La partie affichage/calcul du dendrogram
++ spoon : La partie avec Spoon
+
 # Librairie
 
 + ASTParser
