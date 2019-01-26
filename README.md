@@ -24,17 +24,21 @@ Par défault, l'analyse porte sur le projet lui même, pour analyser un projet i
 
 ## Metriques
 
-Beaucoup plus complète pour ASTParser, on relève quelques métriques comme le nombre de classe, de méthodes, etc
+Beaucoup plus complète pour ASTParser, on relève quelques métriques :
++ Nombre de classes
++ Nombre de méthodes
++ ... (Voir ASTParserMain)
 
 ## Graphe d'appels
 
 Nous recommendons d'utiliser la version Spoon car celle d'AST pose problème pour les appels de méthode dans une même classe, nottament si l'appel n'utilise pas "this".
 
-
+Affichage l'ensemble des classes interne en projet (en bleu), pour chaque classe on vois la liste des méthodes de cette dernière.
+Une flèche relie les méthode lorsqu'elle s'appellent entre elles. (Dans le sens de la flèche, methode1 -> méthodeB).
 
 ## Graphe de couplage
 
-
+Affichage l'ensemble des classes interne en projet (en bleu), les classes sont reliés entre elles lorsque ces dernière intéragissent entre elles (via des appelent de méthode). Un trait relie les classes entre elles avec une valeur (x / y), x étant le nombre d'appels entre les deux classes (somme) et y nombre total d'appel de méthode. Dans notre exemple il y a des flèche mais c'est une limite de mxGraph, il ne faut pas en tenir compte.
 
 ## Dendrogramme (Non fonctionnel)
 
