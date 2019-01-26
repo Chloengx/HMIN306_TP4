@@ -6,8 +6,8 @@ import javax.swing.JFrame;
 
 import hmin306.tp4.astparser.example.ASTParserExample;
 import hmin306.tp4.astparser.example.visitor.CustomASTVisitor;
-import hmin306.tp4.graphe.call.CallGraph;
-import hmin306.tp4.graphe.coupling.CouplingGraph;
+import hmin306.tp4.graph.call.CallGraph;
+import hmin306.tp4.graph.coupling.CouplingGraph;
 import hmin306.tp4.structure.coupling.CouplingStructure;
 
 public class ASTParserMain

@@ -1,4 +1,4 @@
-package hmin306.tp4.graphe.call;
+package hmin306.tp4.graph.call;
 
 import java.util.ArrayList;
 import java.util.Collection;

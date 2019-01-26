@@ -1,4 +1,4 @@
-package hmin306.tp4.graphe.coupling;
+package hmin306.tp4.graph.coupling;
 
 import java.util.Map;
 

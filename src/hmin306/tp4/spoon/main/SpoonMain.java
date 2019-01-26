@@ -4,11 +4,11 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 
-import hmin306.tp4.graphe.call.CallGraph;
-import hmin306.tp4.graphe.coupling.CouplingGraph;
 import hmin306.tp4.spoon.example.SpoonExample;
 
 import hmin306.tp4.dendrogram.*;
+import hmin306.tp4.graph.call.CallGraph;
+import hmin306.tp4.graph.coupling.CouplingGraph;
 
 public class SpoonMain
 {
